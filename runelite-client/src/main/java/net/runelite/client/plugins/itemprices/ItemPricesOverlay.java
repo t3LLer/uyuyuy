@@ -233,12 +233,12 @@ class ItemPricesOverlay extends Overlay
 								{
 									final int price = osbresult.getOverall_average();
 									setGePrice(price);
-									log.info("Osbuddy Price: {}", price);
+									log.debug("Osbuddy Price: {}", price);
 								},
 								(e) -> log.debug("Error getting price of item {}", finalId, e)
 						);
 
-				log.info("Item Manager Price: {}", itemManager.getItemPrice(finalId));
+				log.debug("Item Manager Price: {}", itemManager.getItemPrice(finalId));
 				if(itemManager.getItemPrice(finalId) > getGePrice() )
 				{
 					setGePrice(itemManager.getItemPrice(finalId));
