@@ -27,21 +27,33 @@ package net.runelite.client.config;
 @ConfigGroup("helpers")
 public interface HelperConfig extends Config {
 
-    // If you manually change these settings you might break an active plugin.
+    // If you manually change Widget settings you might break an active plugin.
 
     @ConfigItem(
             keyName = "widgetEnableCombat",
             name = "NPC Combat Overlay",
-            description = "Enables or Disables the NPC Combat Overlay"
+            description = "Show ALL NPC Health / Level and Death Status",
+            group = "Combat"
     )
     default boolean widgetEnableComabat() {
         return true;
     }
 
     @ConfigItem(
+            keyName = "showOpponentCountInfo",
+            name = "Opponent Info",
+            description = "Show Number of and Name of NPC Opponents (Your Target / Their Target)",
+            group = "Combat"
+    )
+    default boolean showOpponentCountInfo() {
+        return true;
+    }
+
+    @ConfigItem(
             keyName = "playerWidgets",
             name = "Player Widgets",
-            description = "Enables or Disables Player related Widgets"
+            description = "Enables or Disables Player related Widgets",
+            group = "Widgets"
     )
     default boolean playerWidgets() {
         return true;
@@ -50,7 +62,8 @@ public interface HelperConfig extends Config {
     @ConfigItem(
             keyName = "widgetNPCprompts",
             name = "NPC Widgets",
-            description = "Enables or Disables NPC related Widgets"
+            description = "Enables or Disables NPC related Widgets",
+            group = "Widgets"
     )
     default boolean widgetNPCprompts() {
         return true;
@@ -59,7 +72,8 @@ public interface HelperConfig extends Config {
     @ConfigItem(
             keyName = "widgetRunecrafting",
             name = "Runcrafting Widgets",
-            description = "Enables or Disables Runecrafting related widgets"
+            description = "Enables or Disables Runecrafting related widgets",
+            group = "Widgets"
     )
     default boolean widgetRunecrafting() {
         return true;
@@ -68,25 +82,18 @@ public interface HelperConfig extends Config {
     @ConfigItem(
             keyName = "widgetBanking",
             name = "Banking Widgets",
-            description = "Enables or Disables Banking/Inventory related widgets"
+            description = "Enables or Disables Banking/Inventory related widgets",
+            group = "Widgets"
     )
     default boolean widgetBanking() {
         return true;
     }
 
     @ConfigItem(
-            keyName = "showOpponentCountInfo",
-            name = "Opponent Info",
-            description = "Show Number of and Name of Opponents"
-    )
-    default boolean showOpponentCountInfo() {
-        return true;
-    }
-
-    @ConfigItem(
             keyName = "showDebug",
             name = "[D] Debug Info",
-            description = "Show Widget Debug Info"
+            description = "Show Widget Debug Info",
+            group = "Debug"
     )
     default boolean showDebug() {
         return false;
@@ -95,7 +102,8 @@ public interface HelperConfig extends Config {
     @ConfigItem(
             keyName = "showRegionInfo",
             name = "[D] Region Info",
-            description = "Show Region Debug Info"
+            description = "Show Region Debug Info",
+            group = "Debug"
     )
     default boolean showRegionInfo() {
         return false;
@@ -104,7 +112,8 @@ public interface HelperConfig extends Config {
     @ConfigItem(
             keyName = "showWidgetInfo",
             name = "[D] Widget Info",
-            description = "Show Widget Debug Info"
+            description = "Show Widget Debug Info",
+            group = "Debug"
     )
     default boolean showWidgetInfo() {
         return false;
@@ -114,7 +123,8 @@ public interface HelperConfig extends Config {
     @ConfigItem(
             keyName = "showOpponentInfo",
             name = "[D] Opponent Info",
-            description = "Show Opponent Debug Info"
+            description = "Show Opponent Debug Info",
+            group = "Debug"
     )
     default boolean showOpponentInfo() {
         return false;
@@ -124,7 +134,8 @@ public interface HelperConfig extends Config {
     @ConfigItem(
             keyName = "mouseSnapShot",
             name = "[D] Mouse Snapshot",
-            description = "Show Mouse Snapshot Debug Info"
+            description = "Show Mouse Snapshot Debug Info",
+            group = "Debug"
     )
     default boolean showMouseSnapShot() {
         return false;

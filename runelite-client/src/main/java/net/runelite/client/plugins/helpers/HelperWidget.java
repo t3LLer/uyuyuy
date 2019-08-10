@@ -180,6 +180,7 @@ public class HelperWidget extends Overlay {
         }
 
         if (WidgetBankingEnabled) {
+
             inventory = client.getWidget(WidgetInfo.INVENTORY);
             bank = client.getWidget(WidgetInfo.BANK_ITEM_CONTAINER);
             bankIsOpen = bank != null && !bank.isHidden();
@@ -195,6 +196,7 @@ public class HelperWidget extends Overlay {
                     }
                 }
             }
+
         }
 
         if (WidgetCombatEnabled) {
@@ -269,14 +271,18 @@ public class HelperWidget extends Overlay {
         }
 
         /* RENDER BANK BOOTHS */
-        Set<GameObject> boothObjects = HelperPlugin.getBoothObjects();
-        if (boothObjects != null) {
-            for (GameObject boothObject : boothObjects) {
-                if (boothObject.getWorldLocation().distanceTo2D(client.getLocalPlayer().getWorldLocation()) <= 12) {
-                    Polygon p = boothObject.getConvexHull();
-                    HelperDraw.renderPoly(graphics, Color.YELLOW, p);
+        if(WidgetBankingEnabled) {
+
+            Set<GameObject> boothObjects = HelperPlugin.getBoothObjects();
+            if (boothObjects != null) {
+                for (GameObject boothObject : boothObjects) {
+                    if (boothObject.getWorldLocation().distanceTo2D(client.getLocalPlayer().getWorldLocation()) <= 12) {
+                        Polygon p = boothObject.getConvexHull();
+                        HelperDraw.renderPoly(graphics, Color.YELLOW, p);
+                    }
                 }
             }
+
         }
 
         return null;
@@ -302,6 +308,8 @@ public class HelperWidget extends Overlay {
         WidgetBankingEnabled = false;
         WidgetNPCPromptsEnabled = false;
         WidgetRunecraftEnabled = false;
+        WidgetPlayerEnabled = false;
+
     }
 
     /**
@@ -313,6 +321,7 @@ public class HelperWidget extends Overlay {
         WidgetBankingEnabled = true;
         WidgetNPCPromptsEnabled = true;
         WidgetRunecraftEnabled = true;
+        WidgetPlayerEnabled = true;
     }
 
     /**
