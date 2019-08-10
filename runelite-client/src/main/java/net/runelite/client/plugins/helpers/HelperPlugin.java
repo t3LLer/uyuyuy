@@ -124,11 +124,10 @@ public class HelperPlugin extends Plugin {
     }
 
     @Schedule(
-            period = 300,
+            period = 600,
             unit = ChronoUnit.SECONDS
     )
     public void updateMotionFactory() {
-        log.info("[x_o] Attempting to reset motionFactory and update Randoms");
         updateMouseMotionFactory();
     }
 
@@ -209,7 +208,7 @@ public class HelperPlugin extends Plugin {
         helperMotionFactoryFast = factory;
 
 
-        log.info("[x_o] Helper Motion Factory has been Updated");
+        log.info("[x_o] Helper Motion Factory and Randoms have been Updated");
     }
 
     public void updateConfig(){
