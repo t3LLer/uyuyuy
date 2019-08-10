@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 
 public class RuneLiteAPI {
 	private static final String version = "1.5.30.1";
-	private static final String serviceVersion = "1.5.30-SNAPSHOT";
+	private static final String serviceVersion = "1.5.31-SNAPSHOT";
 	private static final int rsVersion = 181;
 
 	public static final OkHttpClient CLIENT;
