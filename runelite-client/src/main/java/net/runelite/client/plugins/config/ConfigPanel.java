@@ -80,6 +80,7 @@ public class ConfigPanel extends PluginPanel {
     private final ConfigManager configManager;
     private final ScheduledExecutorService executorService;
     private final RuneLightConfig runeLightConfig;
+    private final HelperConfig helperConfig;
     private final ChatColorConfig chatColorConfig;
     private final ColorPickerManager colorPickerManager;
     public static List<PluginListItem> pluginList = new ArrayList<>();
@@ -99,13 +100,14 @@ public class ConfigPanel extends PluginPanel {
     }
 
     ConfigPanel(PluginManager pluginManager, ConfigManager configManager, ScheduledExecutorService executorService,
-                RuneLightConfig runeLightConfig, ChatColorConfig chatColorConfig,
+                RuneLightConfig runeLightConfig, HelperConfig helper, ChatColorConfig chatColorConfig,
                 ColorPickerManager colorPickerManager) {
         super(false);
         this.pluginManager = pluginManager;
         this.configManager = configManager;
         this.executorService = executorService;
         this.runeLightConfig = runeLightConfig;
+        this.helperConfig = helper;
         this.chatColorConfig = chatColorConfig;
         this.colorPickerManager = colorPickerManager;
 
@@ -191,7 +193,13 @@ public class ConfigPanel extends PluginPanel {
     private void initializePluginList() {
         final List<String> pinnedPlugins = getPinnedPluginNames();
 
-        // set RuneLite config on top, as it should always have been
+        final PluginListItem helper = new PluginListItem(this, configManager, helperConfig,
+                configManager.getConfigDescriptor(helperConfig),
+                "Infinity Helper", "Helper Settings", "client");
+        helper.setPinned(pinnedPlugins.contains("Infinity Helper"));
+        helper.nameLabel.setForeground(Color.WHITE);
+        pluginList.add(helper);
+
         final PluginListItem runeLite = new PluginListItem(this, configManager, runeLightConfig,
                 configManager.getConfigDescriptor(runeLightConfig),
                 RUNELIGHT_PLUGIN, "RuneLight client settings", "client");

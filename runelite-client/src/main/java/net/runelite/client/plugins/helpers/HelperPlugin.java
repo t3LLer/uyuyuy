@@ -30,13 +30,13 @@ import com.github.hermetism.naturalmouse.support.*;
 import com.github.hermetism.naturalmouse.util.FlowTemplates;
 import com.google.inject.Provides;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameObject;
 import net.runelite.api.GameState;
 import net.runelite.api.events.*;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.config.HelperConfig;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
@@ -59,7 +59,8 @@ import static net.runelite.client.plugins.helpers.HelperWidget.WidgetCombatEnabl
 @Slf4j
 @PluginDescriptor(
         name = "Infinity Helper",
-        type = PluginType.SKILLING
+        loadWhenOutdated = true,
+        hidden = true
 )
 public class HelperPlugin extends Plugin {
 
@@ -170,11 +171,6 @@ public class HelperPlugin extends Plugin {
                 flows.add(new Flow(FlowTemplates.randomFlowHigh()));
                 break;
 
-//            case 4:
-//                 lowest is only good for actions like clicking on the next inv slot etc.
-//                flows.add(new Flow(FlowTemplates.randomFlowLowest()));
-//                break;
-
             case 4:
                 flows.add(new Flow(FlowTemplates.randomFlowWide()));
                 break;
@@ -214,11 +210,6 @@ public class HelperPlugin extends Plugin {
 
 
         log.info("[x_o] Helper Motion Factory has been Updated");
-    }
-
-    @Provides
-    HelperConfig provideConfig(ConfigManager configManager) {
-        return configManager.getConfig(HelperConfig.class);
     }
 
     public void updateConfig(){

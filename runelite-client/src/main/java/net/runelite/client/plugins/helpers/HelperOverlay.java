@@ -26,6 +26,7 @@
 package net.runelite.client.plugins.helpers;
 
 import net.runelite.api.Client;
+import net.runelite.client.config.HelperConfig;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.OverlayPriority;

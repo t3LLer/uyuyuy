@@ -36,9 +36,7 @@ import net.runelite.api.Client;
 import net.runelite.api.hooks.Callbacks;
 import net.runelite.client.callback.Hooks;
 import net.runelite.client.chat.ChatMessageManager;
-import net.runelite.client.config.ChatColorConfig;
-import net.runelite.client.config.ConfigManager;
-import net.runelite.client.config.RuneLightConfig;
+import net.runelite.client.config.*;
 import net.runelite.client.config.RuneLightConfig;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.game.ItemManager;
@@ -112,6 +110,13 @@ public class RuneLiteModule extends AbstractModule
 	RuneLightConfig provideConfig(ConfigManager configManager)
 	{
 		return configManager.getConfig(RuneLightConfig.class);
+	}
+
+	@Provides
+	@Singleton
+	HelperConfig provideConfigHelper(ConfigManager configManager)
+	{
+		return configManager.getConfig(HelperConfig.class);
 	}
 
 	@Provides
