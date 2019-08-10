@@ -72,7 +72,6 @@ import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.Text;
-import net.runelite.http.api.xp.XpClient;
 
 @PluginDescriptor(
 	name = "XP Tracker",
@@ -127,7 +126,6 @@ public class XpTrackerPlugin extends Plugin
 	private boolean fetchXp;
 	private long lastXp = 0;
 
-	private final XpClient xpClient = new XpClient();
 	private final XpState xpState = new XpState();
 	private final XpPauseState xpPauseState = new XpPauseState();
 
@@ -215,27 +213,6 @@ public class XpTrackerPlugin extends Plugin
 				fetchXp = true;
 				lastWorldType = type;
 				resetState();
-			}
-		}
-		else if (state == GameState.LOGIN_SCREEN)
-		{
-			Player local = client.getLocalPlayer();
-			if (local == null)
-			{
-				return;
-			}
-
-			String username = local.getName();
-			if (username == null)
-			{
-				return;
-			}
-
-			long totalXp = client.getOverallExperience();
-			// Don't submit xptrack unless xp threshold is reached
-			if (Math.abs(totalXp - lastXp) > XP_THRESHOLD)
-			{
-				xpClient.update(username);
 			}
 		}
 	}

@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
 import net.runelite.api.Item;
-import net.runelite.http.api.loottracker.GameItem;
+import net.runelite.http.api.loot.GameItem;
 
 /**
  * Utility class for Item arrays.

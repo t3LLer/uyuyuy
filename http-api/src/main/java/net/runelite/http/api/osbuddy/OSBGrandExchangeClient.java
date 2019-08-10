@@ -29,6 +29,8 @@ import io.reactivex.Observable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Objects;
+
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.http.api.RuneLiteAPI;
 import okhttp3.HttpUrl;
@@ -61,7 +63,7 @@ public class OSBGrandExchangeClient
 					return Observable.error(new IOException("Error looking up item id: " + response));
 				}
 
-				final InputStream in = response.body().byteStream();
+				final InputStream in = Objects.requireNonNull(response.body()).byteStream();
 				return Observable.just(RuneLiteAPI.GSON.fromJson(new InputStreamReader(in), OSBGrandExchangeResult.class));
 			}
 			catch (JsonParseException e)

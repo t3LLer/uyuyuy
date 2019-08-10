@@ -42,7 +42,7 @@ import static net.runelite.api.widgets.WidgetInfo.DIALOG_SPRITE_TEXT;
 import static net.runelite.api.widgets.WidgetInfo.LEVEL_UP_LEVEL;
 import static net.runelite.api.widgets.WidgetInfo.PACK;
 import net.runelite.client.Notifier;
-import net.runelite.client.config.RuneLiteConfig;
+import net.runelite.client.config.RuneLightConfig;
 import net.runelite.client.ui.ClientUI;
 import net.runelite.client.ui.DrawManager;
 import static org.junit.Assert.assertEquals;
@@ -92,7 +92,7 @@ public class ScreenshotPluginTest
 
 	@Mock
 	@Bind
-	RuneLiteConfig config;
+	RuneLightConfig config;
 
 	@Mock
 	@Bind

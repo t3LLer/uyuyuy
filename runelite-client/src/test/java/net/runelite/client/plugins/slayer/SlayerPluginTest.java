@@ -27,13 +27,12 @@ package net.runelite.client.plugins.slayer;
 import com.google.inject.Guice;
 import com.google.inject.testing.fieldbinder.Bind;
 import com.google.inject.testing.fieldbinder.BoundFieldModule;
-import java.io.IOException;
+
 import java.util.concurrent.ScheduledExecutorService;
 import javax.inject.Inject;
-import net.runelite.api.ChatMessageType;
+
 import static net.runelite.api.ChatMessageType.GAMEMESSAGE;
 import net.runelite.api.Client;
-import net.runelite.api.MessageNode;
 import net.runelite.api.Player;
 import net.runelite.api.Skill;
 import net.runelite.api.Varbits;
@@ -50,16 +49,15 @@ import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
-import net.runelite.http.api.chat.ChatClient;
+
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+
 import org.mockito.Mock;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -135,10 +133,6 @@ public class SlayerPluginTest
 	@Mock
 	@Bind
 	ScheduledExecutorService executor;
-
-	@Mock
-	@Bind
-	ChatClient chatClient;
 
 	@Inject
 	SlayerPlugin slayerPlugin;
@@ -401,47 +395,6 @@ public class SlayerPluginTest
 		slayerPlugin.setShowSuperiorNotification(false);
 		slayerPlugin.onChatMessage(chatMessageEvent);
 		verifyNoMoreInteractions(notifier);
-	}
-
-	@Test
-	public void testTaskLookup() throws IOException
-	{
-		net.runelite.http.api.chat.Task task = new net.runelite.http.api.chat.Task();
-		task.setTask("Abyssal demons");
-		task.setLocation("Abyss");
-		task.setAmount(42);
-		task.setInitialAmount(42);
-
-		slayerPlugin.setTaskCommand(true);
-		when(chatClient.getTask(anyString())).thenReturn(task);
-
-		ChatMessage setMessage = new ChatMessage();
-		setMessage.setType(ChatMessageType.PUBLICCHAT);
-		setMessage.setName("Adam");
-		setMessage.setMessageNode(mock(MessageNode.class));
-
-		slayerPlugin.taskLookup(setMessage, "!task");
-
-		verify(chatMessageManager).update(any(MessageNode.class));
-	}
-
-	@Test
-	public void testTaskLookupInvalid() throws IOException
-	{
-		net.runelite.http.api.chat.Task task = new net.runelite.http.api.chat.Task();
-		task.setTask("task<");
-		task.setLocation("loc");
-		task.setAmount(42);
-		task.setInitialAmount(42);
-
-		ChatMessage chatMessage = new ChatMessage();
-		chatMessage.setType(ChatMessageType.PUBLICCHAT);
-		chatMessage.setName("Adam");
-		chatMessage.setMessageNode(mock(MessageNode.class));
-
-		slayerPlugin.taskLookup(chatMessage, "!task");
-
-		verify(chatMessageManager, never()).update(any(MessageNode.class));
 	}
 
 	@Test

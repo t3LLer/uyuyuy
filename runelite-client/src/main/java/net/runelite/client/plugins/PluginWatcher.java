@@ -46,7 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.RuneLite;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.config.RuneLitePlusConfig;
+import net.runelite.client.config.RuneLightConfig;
 
 @Singleton
 @Slf4j
@@ -54,7 +54,7 @@ public class PluginWatcher extends Thread
 {
 	private static final File BASE = RuneLite.PLUGIN_DIR;
 
-	private final RuneLitePlusConfig runelitePlusConfig;
+	private final RuneLightConfig runelitePlusConfig;
 	private final PluginManager pluginManager;
 	private final WatchService watchService;
 	private final WatchKey watchKey;
@@ -63,7 +63,7 @@ public class PluginWatcher extends Thread
 	private ConfigManager configManager;
 
 	@Inject
-	public PluginWatcher(RuneLitePlusConfig runelitePlusConfig, PluginManager pluginManager) throws IOException
+	public PluginWatcher(RuneLightConfig runelitePlusConfig, PluginManager pluginManager) throws IOException
 	{
 		this.runelitePlusConfig = runelitePlusConfig;
 		this.pluginManager = pluginManager;

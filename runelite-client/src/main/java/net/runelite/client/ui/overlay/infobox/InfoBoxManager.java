@@ -37,7 +37,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.events.ConfigChanged;
-import net.runelite.client.config.RuneLiteConfig;
+import net.runelite.client.config.RuneLightConfig;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.game.AsyncBufferedImage;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -47,12 +47,12 @@ import net.runelite.client.plugins.PluginDescriptor;
 public class InfoBoxManager
 {
 	private final List<InfoBox> infoBoxes = new ArrayList<>();
-	private final RuneLiteConfig runeLiteConfig;
+	private final RuneLightConfig runeLightConfig;
 
 	@Inject
-	private InfoBoxManager(final RuneLiteConfig runeLiteConfig, final EventBus eventbus)
+	private InfoBoxManager(final RuneLightConfig runeLightConfig, final EventBus eventbus)
 	{
-		this.runeLiteConfig = runeLiteConfig;
+		this.runeLightConfig = runeLightConfig;
 
 		eventbus.subscribe(ConfigChanged.class, this, this::onConfigChanged);
 	}
@@ -139,7 +139,7 @@ public class InfoBoxManager
 		BufferedImage resultImage = image;
 		final double width = image.getWidth(null);
 		final double height = image.getHeight(null);
-		final double size = Math.max(2, runeLiteConfig.infoBoxSize()); // Limit size to 2 as that is minimum size not causing breakage
+		final double size = Math.max(2, runeLightConfig.infoBoxSize()); // Limit size to 2 as that is minimum size not causing breakage
 
 		if (size < width || size < height)
 		{

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.http.api.loottracker.LootRecordType;
+import net.runelite.http.api.loot.LootRecordType;
 
 /**
  *

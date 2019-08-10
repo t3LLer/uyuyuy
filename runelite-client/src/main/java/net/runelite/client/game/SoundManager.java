@@ -12,7 +12,7 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import net.runelite.client.config.RuneLiteConfig;
+import net.runelite.client.config.RuneLightConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,12 +20,12 @@ import org.slf4j.LoggerFactory;
 public class SoundManager
 {
 	private static final Logger log = LoggerFactory.getLogger(SoundManager.class);
-	private final RuneLiteConfig runeliteConfig;
+	private final RuneLightConfig runeliteConfig;
 
 	@Inject
-	private SoundManager(RuneLiteConfig runeLiteConfig)
+	private SoundManager(RuneLightConfig runeLightConfig)
 	{
-		this.runeliteConfig = runeLiteConfig;
+		this.runeliteConfig = runeLightConfig;
 	}
 
 	public void playSound(final Sound sound)

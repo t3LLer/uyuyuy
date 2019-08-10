@@ -27,8 +27,12 @@ package net.runelite.http.api.worlds;
 
 import com.google.gson.JsonParseException;
 import io.reactivex.Observable;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Objects;
+
 import net.runelite.http.api.RuneLiteAPI;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
@@ -59,10 +63,10 @@ public class WorldClient
 				if (!response.isSuccessful())
 				{
 					logger.debug("Error looking up worlds: {}", response);
-					return Observable.just(null);
+					return Observable.error(new IOException("Error looking up worlds: " + response));
 				}
 
-				InputStream in = response.body().byteStream();
+				InputStream in = Objects.requireNonNull(response.body()).byteStream();
 				return Observable.just(RuneLiteAPI.GSON.fromJson(new InputStreamReader(in), WorldResult.class));
 			}
 			catch (JsonParseException ex)

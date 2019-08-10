@@ -96,10 +96,6 @@ import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.Text;
 import org.apache.commons.lang3.StringUtils;
 import static org.apache.commons.lang3.StringUtils.containsIgnoreCase;
-import net.runelite.client.ws.PartyMember;
-import net.runelite.client.ws.PartyService;
-import net.runelite.client.ws.WSClient;
-import net.runelite.http.api.ws.messages.party.PartyChatMessage;
 
 @PluginDescriptor(
 	name = "CoX Scouter",
@@ -201,12 +197,6 @@ public class RaidsPlugin extends Plugin
 	@Inject
 	private EventBus eventBus;
 	private boolean raidStarted;
-
-	@Inject
-	private PartyService party;
-
-	@Inject
-	private WSClient ws;
 
 	@Getter
 	private final List<String> roomWhitelist = new ArrayList<>();
@@ -669,7 +659,6 @@ public class RaidsPlugin extends Plugin
 				raid.updateLayout(layout);
 				RotationSolver.solve(raid.getCombatRooms());
 				setOverlayStatus(true);
-				sendRaidLayoutMessage();
 				Matcher puzzleMatch = PUZZLES.matcher(raid.getFullRotationString());
 				final List<String> puzzles = new ArrayList<>();
 				while (puzzleMatch.find())
@@ -703,58 +692,6 @@ public class RaidsPlugin extends Plugin
 		{
 			setOverlayStatus(false);
 			raidStarted = false;
-		}
-	}
-
-	private void sendRaidLayoutMessage()
-	{
-		if (!this.displayLayoutMessage)
-		{
-			return;
-		}
-
-		final String layout = getRaid().getLayout().toCodeString();
-		final String rooms = getRaid().toRoomString();
-		final String raidData = "[" + layout + "]: " + rooms;
-		layoutMessage = new ChatMessageBuilder()
-				.append(ChatColorType.HIGHLIGHT)
-				.append("Layout: ")
-				.append(ChatColorType.NORMAL)
-				.append(raidData)
-				.build();
-
-		final PartyMember localMember = party.getLocalMember();
-		if (party.getMembers().isEmpty() || localMember == null)
-		{
-			chatMessageManager.queue(QueuedMessage.builder()
-				.type(ChatMessageType.FRIENDSCHATNOTIFICATION)
-				.runeLiteFormattedMessage(layoutMessage)
-				.build());
-		}
-		else
-		{
-			final PartyChatMessage message = new PartyChatMessage(layoutMessage);
-			message.setMemberId(localMember.getMemberId());
-			ws.send(message);
-		}
-
-		if (recordRaid() != null)
-		{
-			chatMessageManager.queue(QueuedMessage.builder()
-				.type(ChatMessageType.FRIENDSCHATNOTIFICATION)
-				.runeLiteFormattedMessage(new ChatMessageBuilder()
-					.append(ChatColorType.HIGHLIGHT)
-					.append("You have scouted a record raid, whilst this is a very good raid to do you will probably end up profiting more by selling this raid to a team looking for it.")
-					.build())
-				.build());
-
-			chatMessageManager.queue(QueuedMessage.builder()
-				.type(ChatMessageType.FRIENDSCHATNOTIFICATION)
-				.runeLiteFormattedMessage(new ChatMessageBuilder()
-					.append(ChatColorType.HIGHLIGHT)
-					.append("The following are some places you can sell this raid: Scout Trading in We do Raids discord, and Buying Cox Rotations in Oblivion discord.")
-					.build())
-				.build());
 		}
 	}
 

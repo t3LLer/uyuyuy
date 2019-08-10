@@ -4,24 +4,13 @@ buildscript {
             url "https://plugins.gradle.org/m2/"
         }
     }
-    dependencies {
-        classpath "org.ajoberstar.grgit:grgit-gradle:3.1.1"
-    }
 }
 
 plugins {
-    id "com.github.ben-manes.versions" version "0.21.0"
     id "com.gradle.build-scan" version "2.3"
 }
 
 apply plugin: 'application'
-
-ext {
-    grgit = org.ajoberstar.grgit.Grgit.open(dir: '.')
-    localGitCommit = grgit.head().id
-    localGitCommitShort = grgit.head().getAbbreviatedId(7)
-    localGitDirty = !grgit.status().clean
-}
 
 allprojects {
     apply plugin: 'maven'
@@ -34,11 +23,6 @@ allprojects {
         rsversion = 181
         cacheversion = 165
         plusVersion = '2.1.2.0'
-
-        gitCommit = localGitCommit
-        gitCommitShort = localGitCommitShort
-        gitDirty = localGitDirty
-
         rootPath = rootDir.toString().replace('\\', '/')
         injectedClassesPath = rootPath + "/injector-plugin/out/injected-client/"
     }
@@ -61,9 +45,6 @@ subprojects {
         maven { url "http://repo.runelite.net" }
         maven { url "http://repo.maven.apache.org/maven2" }
         maven { url "https://raw.githubusercontent.com/runelite-extended/maven-repo/master" }
-        if (System.getenv("NEXUS-URL") != null) {
-            maven { url System.getenv("NEXUS-URL") }
-        }
     }
 
     checkstyle {
@@ -74,16 +55,6 @@ subprojects {
         showViolations = true
         ignoreFailures = false
         maxWarnings = 0
-    }
-
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                repository(url: System.getenv("NEXUS_URL")) {
-                    authentication(userName: System.getenv("NEXUS_USER"), password: System.getenv("NEXUS_PASSWORD"))
-                }
-            }
-        }
     }
 }
 

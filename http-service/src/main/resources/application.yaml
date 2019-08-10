@@ -12,12 +12,6 @@ datasource:
 # fails when starting the 2nd api
 spring.jmx.enabled: false
 
-# Google OAuth client
-oauth:
-  client-id:
-  client-secret:
-  callback: https://api.runelite.net/oauth/
-
 # Minio client storage for cache
 minio:
   endpoint: http://localhost:9000
@@ -29,11 +23,3 @@ minio:
 redis:
   pool.size: 10
   host: http://localhost:6379
-
-
-# Twitter client for feed
-runelite:
-  twitter:
-    consumerkey:
-    secretkey:
-    listid: 968949795153948673

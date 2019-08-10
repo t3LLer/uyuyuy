@@ -66,7 +66,7 @@ import net.runelite.client.RuneLite;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.config.RuneLiteConfig;
+import net.runelite.client.config.RuneLightConfig;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.events.PluginChanged;
 import net.runelite.client.events.SessionClose;
@@ -93,7 +93,7 @@ public class PluginManager
 	private final Provider<GameEventManager> sceneTileManager;
 	private final List<Plugin> plugins = new CopyOnWriteArrayList<>();
 	private final List<Plugin> activePlugins = new CopyOnWriteArrayList<>();
-	private final String runeliteGroupName = RuneLiteConfig.class
+	private final String runeliteGroupName = RuneLightConfig.class
 		.getAnnotation(ConfigGroup.class).value();
 
 	@Inject

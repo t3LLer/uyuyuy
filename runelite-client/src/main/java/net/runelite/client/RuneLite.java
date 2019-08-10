@@ -46,11 +46,9 @@ import joptsimple.util.EnumConverter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
-import net.runelite.client.account.SessionManager;
 import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.chat.CommandManager;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.discord.DiscordService;
 import net.runelite.client.game.ClanManager;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.LootManager;
@@ -62,7 +60,6 @@ import net.runelite.client.rs.ClientUpdateCheckMode;
 import net.runelite.client.task.Scheduler;
 import net.runelite.client.ui.ClientUI;
 import net.runelite.client.ui.DrawManager;
-import net.runelite.client.ui.RuneLiteSplashScreen;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.OverlayRenderer;
 import net.runelite.client.ui.overlay.WidgetOverlay;
@@ -72,8 +69,6 @@ import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
 import net.runelite.client.ui.overlay.infobox.InfoBoxOverlay;
 import net.runelite.client.ui.overlay.tooltip.TooltipOverlay;
 import net.runelite.client.ui.overlay.worldmap.WorldMapOverlay;
-import net.runelite.client.util.bootstrap.Bootstrapper;
-import net.runelite.client.ws.PartyService;
 import org.slf4j.LoggerFactory;
 
 @Singleton
@@ -84,9 +79,7 @@ public class RuneLite
 	public static final File RUNELITE_DIR = new File(System.getProperty("user.home"), ".runelite");
 	public static final File PROFILES_DIR = new File(RUNELITE_DIR, "profiles");
 	public static final File PLUGIN_DIR = new File(RUNELITE_DIR, "plugins");
-	public static final File SCREENSHOT_DIR = new File(RUNELITE_DIR, "screenshots");
 	public static final File LOGS_DIR = new File(RUNELITE_DIR, "logs");
-	private static final RuneLiteSplashScreen splashScreen = new RuneLiteSplashScreen();
 	public static boolean allowPrivateServer = false;
 
 	@Getter
@@ -102,15 +95,6 @@ public class RuneLite
 	private DrawManager drawManager;
 
 	@Inject
-	private SessionManager sessionManager;
-
-	@Inject
-	public DiscordService discordService;
-
-	@Inject
-	private ClientSessionManager clientSessionManager;
-
-	@Inject
 	private ClientUI clientUI;
 
 	@Inject
@@ -118,9 +102,6 @@ public class RuneLite
 
 	@Inject
 	private OverlayManager overlayManager;
-
-	@Inject
-	private PartyService partyService;
 
 	@Inject
 	private Provider<ItemManager> itemManager;
@@ -176,11 +157,7 @@ public class RuneLite
 		Locale.setDefault(Locale.ENGLISH);
 
 		final OptionParser parser = new OptionParser();
-		parser.accepts("developer-mode", "Enable developer tools");
 		parser.accepts("debug", "Show extra debugging output");
-		parser.accepts("no-splash", "Do not show the splash screen");
-		parser.accepts("bootstrap", "Builds a bootstrap with locally built jars");
-		parser.accepts("bootstrap-staging", "Builds a testing bootstrap with locally built jars");
 		final ArgumentAcceptingOptionSpec<String> proxyInfo = parser
 			.accepts("proxy")
 			.withRequiredArg().ofType(String.class);
@@ -202,16 +179,6 @@ public class RuneLite
 		parser.accepts("help", "Show this text").forHelp();
 		OptionSet options = parser.parse(args);
 
-		if (options.has("bootstrap"))
-		{
-			Bootstrapper.main(false);
-			System.exit(0);
-		}
-		if (options.has("bootstrap-staging"))
-		{
-			Bootstrapper.main(true);
-			System.exit(0);
-		}
 		if (options.has("proxy"))
 		{
 			String[] proxy = options.valueOf(proxyInfo).split(":");
@@ -248,18 +215,6 @@ public class RuneLite
 			System.exit(0);
 		}
 
-		final boolean developerMode = options.has("developer-mode");
-
-		if (developerMode)
-		{
-			boolean assertions = false;
-			assert assertions = true;
-			if (!assertions)
-			{
-				java.util.logging.Logger.getAnonymousLogger().warning("Developers should enable assertions; Add `-ea` to your JVM arguments`");
-			}
-		}
-
 		PROFILES_DIR.mkdirs();
 
 		if (options.has("debug"))
@@ -277,15 +232,6 @@ public class RuneLite
 			}
 		});
 
-		if (!options.has("no-splash"))
-		{
-			splashScreen.open(4);
-		}
-
-		// The submessage is shown in case the connection is slow
-		splashScreen.setMessage("Starting RuneLite Injector");
-		splashScreen.setSubMessage(" ");
-
 		final long start = System.currentTimeMillis();
 
 		injector = Guice.createInjector(new RuneLiteModule(
@@ -293,7 +239,6 @@ public class RuneLite
 			true));
 
 		injector.getInstance(RuneLite.class).start();
-		splashScreen.setProgress(1, 5);
 		final long end = System.currentTimeMillis();
 		final RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
 		final long uptime = rb.getUptime();
@@ -312,14 +257,7 @@ public class RuneLite
 		}
 
 		// Load user configuration
-		splashScreen.setMessage("Loading configuration");
 		configManager.load();
-
-		// Load the session, including saved configuration
-		sessionManager.loadSession();
-		splashScreen.setProgress(2, 5);
-
-		splashScreen.setMessage("Loading plugins");
 
 		// Begin watching for new plugins
 		pluginManager.watch();
@@ -334,22 +272,9 @@ public class RuneLite
 		// Plugins have provided their config, so set default config
 		// to main settings
 		pluginManager.loadDefaultPluginConfiguration();
-		splashScreen.setProgress(3, 5);
-
-		splashScreen.setMessage("Starting Session");
-		// Start client session
-		clientSessionManager.start();
-		splashScreen.setProgress(4, 5);
-
-		// Load the session, including saved configuration
-		splashScreen.setMessage("Loading interface");
-		splashScreen.setProgress(5, 5);
 
 		// Initialize UI
 		clientUI.open(this);
-
-		// Close the splash screen
-		splashScreen.close();
 
 		if (!isOutdated)
 		{
@@ -377,8 +302,6 @@ public class RuneLite
 		// Start plugins
 		pluginManager.startCorePlugins();
 
-		discordService.init();
-
 		// Register additional schedulers
 		if (this.client != null)
 		{
@@ -389,8 +312,6 @@ public class RuneLite
 	public void shutdown()
 	{
 		configManager.sendConfig();
-		clientSessionManager.shutdown();
-		discordService.close();
 	}
 
 	@VisibleForTesting

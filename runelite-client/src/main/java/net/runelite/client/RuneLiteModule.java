@@ -34,13 +34,12 @@ import javax.annotation.Nullable;
 import javax.inject.Singleton;
 import net.runelite.api.Client;
 import net.runelite.api.hooks.Callbacks;
-import net.runelite.client.account.SessionManager;
 import net.runelite.client.callback.Hooks;
 import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.config.ChatColorConfig;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.config.RuneLiteConfig;
-import net.runelite.client.config.RuneLitePlusConfig;
+import net.runelite.client.config.RuneLightConfig;
+import net.runelite.client.config.RuneLightConfig;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.menus.MenuManager;
@@ -79,7 +78,6 @@ public class RuneLiteModule extends AbstractModule
 		bind(Scheduler.class);
 		bind(PluginManager.class);
 		bind(RuneLiteProperties.class);
-		bind(SessionManager.class);
 
 		bind(Callbacks.class).to(Hooks.class);
 
@@ -111,16 +109,16 @@ public class RuneLiteModule extends AbstractModule
 
 	@Provides
 	@Singleton
-	RuneLiteConfig provideConfig(ConfigManager configManager)
+	RuneLightConfig provideConfig(ConfigManager configManager)
 	{
-		return configManager.getConfig(RuneLiteConfig.class);
+		return configManager.getConfig(RuneLightConfig.class);
 	}
 
 	@Provides
 	@Singleton
-	RuneLitePlusConfig providePlusConfig(ConfigManager configManager)
+	RuneLightConfig providePlusConfig(ConfigManager configManager)
 	{
-		return configManager.getConfig(RuneLitePlusConfig.class);
+		return configManager.getConfig(RuneLightConfig.class);
 	}
 
 	@Provides

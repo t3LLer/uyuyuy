@@ -30,7 +30,7 @@ import java.util.Properties;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.client.config.RuneLitePlusConfig;
+import net.runelite.client.config.RuneLightConfig;
 
 @Singleton
 @Slf4j
@@ -38,24 +38,15 @@ public class RuneLiteProperties
 {
 	private static final String RUNELITE_TITLE = "runelite.plus.title";
 	private static final String RUNELITE_VERSION = "runelite.version";
-	private static final String RUNELITE_PLUS_VERSION = "runelite.plus.version";
-	private static final String RUNELITE_PLUS_DATE = "runelite.plus.builddate";
-	private static final String RUNESCAPE_VERSION = "runescape.version";
-	private static final String DISCORD_APP_ID = "runelite.plus.discord.appid";
-	private static final String DISCORD_INVITE = "runelite.discord.invite";
-	private static final String GITHUB_LINK = "runelite.github.link";
-	private static final String WIKI_LINK = "runelite.wiki.link";
-	private static final String PATREON_LINK = "runelite.patreon.link";
-	private static final String LAUNCHER_VERSION_PROPERTY = "runelite.launcher.version";
 
 	private final Properties properties = new Properties();
 
-	private final RuneLitePlusConfig runeLitePlusConfig;
+	private final RuneLightConfig runeLightConfig;
 
 	@Inject
-	public RuneLiteProperties(final RuneLitePlusConfig runeLiteConfig)
+	public RuneLiteProperties(final RuneLightConfig runeLightConfig)
 	{
-		this.runeLitePlusConfig = runeLiteConfig;
+		this.runeLightConfig = runeLightConfig;
 
 		try (InputStream in = getClass().getResourceAsStream("/runelite.plus.properties"))
 		{
@@ -69,7 +60,7 @@ public class RuneLiteProperties
 
 	public RuneLiteProperties()
 	{
-		runeLitePlusConfig = null;
+		runeLightConfig = null;
 	}
 
 	public String getTitle()
@@ -86,45 +77,5 @@ public class RuneLiteProperties
 	public String getVersion()
 	{
 		return properties.getProperty(RUNELITE_VERSION);
-	}
-
-	public String getPlusVersion()
-	{
-		return properties.getProperty(RUNELITE_PLUS_VERSION);
-	}
-
-	public String getPlusDate()
-	{
-		return properties.getProperty(RUNELITE_PLUS_DATE);
-	}
-
-	public String getRunescapeVersion()
-	{
-		return properties.getProperty(RUNESCAPE_VERSION);
-	}
-
-	public String getDiscordAppId()
-	{
-		return properties.getProperty(DISCORD_APP_ID);
-	}
-
-	public String getDiscordInvite()
-	{
-		return properties.getProperty(DISCORD_INVITE);
-	}
-
-	public String getGithubLink()
-	{
-		return properties.getProperty(GITHUB_LINK);
-	}
-
-	public String getWikiLink()
-	{
-		return properties.getProperty(WIKI_LINK);
-	}
-
-	public String getPatreonLink()
-	{
-		return properties.getProperty(PATREON_LINK);
 	}
 }

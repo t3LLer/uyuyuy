@@ -52,7 +52,7 @@ import net.runelite.client.chat.ChatMessageBuilder;
 import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.chat.QueuedMessage;
 import net.runelite.client.config.FlashNotification;
-import net.runelite.client.config.RuneLiteConfig;
+import net.runelite.client.config.RuneLightConfig;
 import net.runelite.client.ui.ClientUI;
 import net.runelite.client.util.OSType;
 
@@ -74,7 +74,7 @@ public class Notifier
 
 	private final Client client;
 	private final String appName;
-	private final RuneLiteConfig runeLiteConfig;
+	private final RuneLightConfig runeLightConfig;
 	private final ClientUI clientUI;
 	private final ScheduledExecutorService executorService;
 	private final ChatMessageManager chatMessageManager;
@@ -87,7 +87,7 @@ public class Notifier
 	private Notifier(
 		final ClientUI clientUI,
 		final Client client,
-		final RuneLiteConfig runeliteConfig,
+		final RuneLightConfig runeliteConfig,
 		final RuneLiteProperties runeLiteProperties,
 		final ScheduledExecutorService executorService,
 		final ChatMessageManager chatMessageManager)
@@ -95,7 +95,7 @@ public class Notifier
 		this.client = client;
 		this.appName = runeLiteProperties.getTitle();
 		this.clientUI = clientUI;
-		this.runeLiteConfig = runeliteConfig;
+		this.runeLightConfig = runeliteConfig;
 		this.executorService = executorService;
 		this.chatMessageManager = chatMessageManager;
 		this.notifyIconPath = RuneLite.RUNELITE_DIR.toPath().resolve("icon.png");
@@ -113,27 +113,27 @@ public class Notifier
 
 	public void notify(String message, TrayIcon.MessageType type)
 	{
-		if (!runeLiteConfig.sendNotificationsWhenFocused() && clientUI.isFocused())
+		if (!runeLightConfig.sendNotificationsWhenFocused() && clientUI.isFocused())
 		{
 			return;
 		}
 
-		if (runeLiteConfig.requestFocusOnNotification())
+		if (runeLightConfig.requestFocusOnNotification())
 		{
 			clientUI.requestFocus();
 		}
 
-		if (runeLiteConfig.enableTrayNotifications())
+		if (runeLightConfig.enableTrayNotifications())
 		{
 			sendNotification(appName, message, type);
 		}
 
-		if (runeLiteConfig.enableNotificationSound())
+		if (runeLightConfig.enableNotificationSound())
 		{
 			Toolkit.getDefaultToolkit().beep();
 		}
 
-		if (runeLiteConfig.enableGameMessageNotification() && client.getGameState() == GameState.LOGGED_IN)
+		if (runeLightConfig.enableGameMessageNotification() && client.getGameState() == GameState.LOGGED_IN)
 		{
 			final String formattedMessage = new ChatMessageBuilder()
 				.append(ChatColorType.HIGHLIGHT)
@@ -147,7 +147,7 @@ public class Notifier
 				.build());
 		}
 
-		if (runeLiteConfig.flashNotification() != FlashNotification.DISABLED)
+		if (runeLightConfig.flashNotification() != FlashNotification.DISABLED)
 		{
 			flashStart = Instant.now();
 			mouseLastPressedMillis = client.getMouseLastPressedMillis();
@@ -164,7 +164,7 @@ public class Notifier
 			return;
 		}
 
-		FlashNotification flashNotification = runeLiteConfig.flashNotification();
+		FlashNotification flashNotification = runeLightConfig.flashNotification();
 
 		if (client.getGameCycle() % 40 >= 20
 			// For solid colour, fall through every time.

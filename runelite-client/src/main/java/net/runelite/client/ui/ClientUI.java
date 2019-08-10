@@ -82,7 +82,7 @@ import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.config.ExpandResizeType;
 import net.runelite.client.config.Keybind;
-import net.runelite.client.config.RuneLiteConfig;
+import net.runelite.client.config.RuneLightConfig;
 import net.runelite.client.config.WarningOnExit;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.events.NavigationButtonAdded;
@@ -123,7 +123,7 @@ public class ClientUI
 	private TrayIcon trayIcon;
 
 	private final RuneLiteProperties properties;
-	private final RuneLiteConfig config;
+	private final RuneLightConfig config;
 	private final KeyManager keyManager;
 	private final MouseManager mouseManager;
 	private final Applet client;
@@ -153,7 +153,7 @@ public class ClientUI
 	@Inject
 	private ClientUI(
 		RuneLiteProperties properties,
-		RuneLiteConfig config,
+		RuneLightConfig config,
 		KeyManager keyManager,
 		MouseManager mouseManager,
 		@Nullable Applet client,
