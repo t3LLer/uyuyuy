@@ -63,8 +63,8 @@ wrapper {
 
     doLast {
         def optsEnvVar = "DEFAULT_JVM_OPTS"
-        scriptFile.write scriptFile.text.replace("$optsEnvVar='\"-Xmx64m\" \"-Xms64m\"'", "$optsEnvVar='\"-Xmx4g\" \"-Xms2g\" \"-Dfile.encoding=UTF-8\"'")
-        batchScript.write batchScript.text.replace("set $optsEnvVar=\"-Xmx64m\" \"-Xms64m\"", "set $optsEnvVar=\"-Xmx4g\" \"-Xms2g\" \"-Dfile.encoding=UTF-8\"")
+        scriptFile.write scriptFile.text.replace("$optsEnvVar='\"-Xmx64m\" \"-Xms64m\"'", "$optsEnvVar='\"-Xmx4g\" \"-Xms2g\" \"-Dfile.encoding=UTF-8\" \"-Djna.nosys=true\"'")
+        batchScript.write batchScript.text.replace("set $optsEnvVar=\"-Xmx64m\" \"-Xms64m\"", "set $optsEnvVar=\"-Xmx4g\" \"-Xms2g\" \"-Dfile.encoding=UTF-8\" \"-Djna.nosys=true\"")
     }
 }
 

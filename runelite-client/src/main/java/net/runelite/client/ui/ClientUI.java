@@ -108,7 +108,6 @@ import org.pushingpixels.substance.internal.utils.SubstanceTitlePaneUtilities;
 public class ClientUI
 {
 	private static final String CONFIG_GROUP = "runelite";
-	private static final String PLUS_CONFIG_GROUP = "runeliteplus";
 	private static final String CONFIG_CLIENT_BOUNDS = "clientBounds";
 	private static final String CONFIG_CLIENT_MAXIMIZED = "clientMaximized";
 	private static final String CONFIG_OPACITY = "enableOpacity";
@@ -116,7 +115,7 @@ public class ClientUI
 	private static final int CLIENT_WELL_HIDDEN_MARGIN = 160;
 	private static final int CLIENT_WELL_HIDDEN_MARGIN_TOP = 10;
 	public static boolean allowInput = false;
-	public static String currentPresenceName = "RuneLitePlus";
+	public static String CLIENT_NAME = "RuneLight";
 	public static final BufferedImage ICON = ImageUtil.getResourceStreamFromClass(ClientUI.class, "/runeliteplus.png");
 
 	@Getter
@@ -178,8 +177,7 @@ public class ClientUI
 	private void onConfigChanged(ConfigChanged event)
 	{
 		if (!event.getGroup().equals(CONFIG_GROUP)
-			&& !(event.getGroup().equals(PLUS_CONFIG_GROUP)
-			&& event.getKey().equals(CONFIG_OPACITY) ||
+			&& !(event.getKey().equals(CONFIG_OPACITY) ||
 			event.getKey().equals(CONFIG_OPACITY_AMOUNT)) ||
 			event.getKey().equals(CONFIG_CLIENT_MAXIMIZED) ||
 			event.getKey().equals(CONFIG_CLIENT_BOUNDS))
@@ -305,7 +303,7 @@ public class ClientUI
 				return false;
 			}
 
-			frame.setTitle(currentPresenceName + " - " + name);
+			frame.setTitle(CLIENT_NAME + " - " + name);
 			return true;
 		});
 	}
@@ -328,7 +326,7 @@ public class ClientUI
 			// Try to enable fullscreen on OSX
 			OSXUtil.tryEnableFullscreen(frame);
 
-			frame.setTitle(ClientUI.currentPresenceName);
+			frame.setTitle(ClientUI.CLIENT_NAME);
 			frame.setIconImage(ICON);
 			frame.getLayeredPane().setCursor(Cursor.getDefaultCursor()); // Prevent substance from using a resize cursor for pointing
 			frame.setLocationRelativeTo(frame.getOwner());
@@ -854,12 +852,12 @@ public class ClientUI
 
 			if (player != null && player.getName() != null)
 			{
-				frame.setTitle(currentPresenceName + " - " + player.getName());
+				frame.setTitle(CLIENT_NAME + " - " + player.getName());
 			}
 		}
 		else
 		{
-			frame.setTitle(currentPresenceName);
+			frame.setTitle(CLIENT_NAME);
 		}
 
 		if (frame.isAlwaysOnTopSupported())
@@ -889,7 +887,7 @@ public class ClientUI
 			configManager.unsetConfiguration(CONFIG_GROUP, CONFIG_CLIENT_BOUNDS);
 		}
 
-		if (configManager.getConfiguration(PLUS_CONFIG_GROUP, CONFIG_OPACITY, boolean.class))
+		if (configManager.getConfiguration(CONFIG_GROUP, CONFIG_OPACITY, boolean.class))
 		{
 			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 			GraphicsDevice gd = ge.getDefaultScreenDevice();
@@ -901,7 +899,7 @@ public class ClientUI
 			else
 			{
 				log.warn("Opacity isn't supported on your system!");
-				configManager.setConfiguration(PLUS_CONFIG_GROUP, CONFIG_OPACITY, false);
+				configManager.setConfiguration(CONFIG_GROUP, CONFIG_OPACITY, false);
 			}
 		}
 		else if (frame.getOpacity() != 1F)
@@ -988,7 +986,7 @@ public class ClientUI
 				}
 
 
-				final float opacity = Float.parseFloat(configManager.getConfiguration(PLUS_CONFIG_GROUP, CONFIG_OPACITY_AMOUNT)) / 100F;
+				final float opacity = Float.parseFloat(configManager.getConfiguration(CONFIG_GROUP, CONFIG_OPACITY_AMOUNT)) / 100F;
 				assert opacity > 0F && opacity <= 1F : "I don't know who you are, I don't know why you tried, and I don't know how you tried, but this is NOT what you're supposed to do and you should honestly feel terrible about what you did, so I want you to take a nice long amount of time to think about what you just tried to do so you are not gonna do this in the future.";
 
 				opacityField.setFloat(frame, opacity);

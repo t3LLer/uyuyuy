@@ -116,13 +116,6 @@ public class RuneLiteModule extends AbstractModule
 
 	@Provides
 	@Singleton
-	RuneLightConfig providePlusConfig(ConfigManager configManager)
-	{
-		return configManager.getConfig(RuneLightConfig.class);
-	}
-
-	@Provides
-	@Singleton
 	ChatColorConfig provideChatColorConfig(ConfigManager configManager)
 	{
 		return configManager.getConfig(ChatColorConfig.class);

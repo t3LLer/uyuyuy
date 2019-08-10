@@ -77,8 +77,6 @@ public class RuneLitePlusPlugin extends Plugin
 	protected void startUp() throws Exception
 	{
 		addSubscriptions();
-		ClientUI.currentPresenceName = ("RuneLitePlus");
-		ClientUI.frame.setTitle(ClientUI.currentPresenceName);
 
 		entered = -1;
 		enterIdx = 0;
