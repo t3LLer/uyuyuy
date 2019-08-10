@@ -39,6 +39,11 @@ public class BaseComparableEntry extends AbstractComparableEntry
 	 * This only effects left click priority entries.
 	 */
 
+	public BaseComparableEntry(String option, String target)
+	{
+		this(option, target, -1, -1, true, false);
+	}
+
 	public BaseComparableEntry(String option, String target, int id, int type, boolean strictOption, boolean strictTarget)
 	{
 		super.option = Text.standardize(option);
