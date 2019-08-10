@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -52,6 +53,7 @@ import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.components.IconTextField;
 import net.runelite.client.ui.components.PluginErrorPanel;
 import net.runelite.http.api.item.ItemPrice;
+import net.runelite.http.api.osbuddy.OSBGrandExchangeClient;
 
 /**
  * This panel holds the search section of the Grand Exchange Plugin.
@@ -61,6 +63,11 @@ import net.runelite.http.api.item.ItemPrice;
 @Singleton
 class GrandExchangeSearchPanel extends JPanel
 {
+	@Inject
+	private ScheduledExecutorService executorService;
+
+	private static final OSBGrandExchangeClient CLIENT = new OSBGrandExchangeClient();
+
 	private static final String ERROR_PANEL = "ERROR_PANEL";
 	private static final String RESULTS_PANEL = "RESULTS_PANEL";
 	private static final int MAX_SEARCH_ITEMS = 100;
@@ -225,25 +232,31 @@ class GrandExchangeSearchPanel extends JPanel
 		SwingUtilities.invokeLater(() ->
 		{
 			int index = 0;
-			for (GrandExchangeItems item : itemsList)
-			{
+			for (GrandExchangeItems item : itemsList) {
+				final int[] osbPrice = {0};
+				CLIENT.lookupItem(item.getItemId())
+						.subscribe(
+								(osbresult) -> {
+									osbPrice[0] = osbresult.getOverall_average();
+									log.debug("GE : Osbuddy Price: {}", osbresult.getOverall_average());
+								},
+								(e) -> log.debug("GE : Error getting price of item {}", item.getItemId(), e)
+						);
+
 				GrandExchangeItemPanel panel = new GrandExchangeItemPanel(item.getIcon(), item.getName(),
-					item.getItemId(), item.getGePrice(), item.getHaPrice(), item.getGeItemLimit());
+						item.getItemId(), item.getGePrice(), osbPrice[0], item.getHaPrice(), item.getGeItemLimit());
 
 				/*
 				Add the first item directly, wrap the rest with margin. This margin hack is because
 				gridbaglayout does not support inter-element margins.
 				 */
-				if (index++ > 0)
-				{
+				if (index++ > 0) {
 					JPanel marginWrapper = new JPanel(new BorderLayout());
 					marginWrapper.setBackground(ColorScheme.DARK_GRAY_COLOR);
 					marginWrapper.setBorder(new EmptyBorder(5, 0, 0, 0));
 					marginWrapper.add(panel, BorderLayout.NORTH);
 					searchItemsPanel.add(marginWrapper, constraints);
-				}
-				else
-				{
+				} else {
 					searchItemsPanel.add(panel, constraints);
 				}
 
@@ -251,15 +264,13 @@ class GrandExchangeSearchPanel extends JPanel
 			}
 
 			// if exactMatch was set, then it came from the applet, so don't lose focus
-			if (!exactMatch)
-			{
+			if (!exactMatch) {
 				searchItemsPanel.requestFocusInWindow();
 			}
 			searchBar.setEditable(true);
 
 			// Remove searching label after search is complete
-			if (!itemsList.isEmpty())
-			{
+			if (!itemsList.isEmpty()) {
 				searchBar.setIcon(IconTextField.Icon.SEARCH);
 			}
 		});

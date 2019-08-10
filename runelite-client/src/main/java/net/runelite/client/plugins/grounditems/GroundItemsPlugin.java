@@ -44,14 +44,18 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import io.reactivex.schedulers.Schedulers;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.ItemDefinition;
@@ -76,6 +80,7 @@ import net.runelite.api.events.ItemSpawned;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.client.Notifier;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.events.NpcLootReceived;
@@ -99,15 +104,25 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ColorUtil;
 import net.runelite.client.util.StackFormatter;
 import net.runelite.client.util.Text;
+import net.runelite.http.api.osbuddy.OSBGrandExchangeClient;
 
 @PluginDescriptor(
 	name = "Ground Items",
 	description = "Highlight ground items and/or show price information",
 	tags = {"grand", "exchange", "high", "alchemy", "prices", "highlight", "overlay"}
 )
+@Slf4j
 @Singleton
 public class GroundItemsPlugin extends Plugin
 {
+	@Inject
+	private ClientThread clientThread;
+
+	@Inject
+	private ScheduledExecutorService executorService;
+
+	private static final OSBGrandExchangeClient CLIENT = new OSBGrandExchangeClient();
+
 	@Getter(AccessLevel.PUBLIC)
 	public static final Map<GroundItem.GroundItemKey, GroundItem> collectedGroundItems = new LinkedHashMap<>();
 	// ItemID for coins
@@ -627,7 +642,27 @@ public class GroundItemsPlugin extends Plugin
 		}
 		else
 		{
-			groundItem.setGePrice(itemManager.getItemPrice(realItemId));
+			int itemPrice = itemComposition.getPrice();
+			int finalItemId = realItemId;
+
+			executorService.submit(() ->
+			{
+				CLIENT.lookupItem(finalItemId)
+						.subscribeOn(Schedulers.io())
+						.observeOn(Schedulers.from(clientThread))
+						.subscribe(
+								(osbresult) -> {
+									groundItem.setGePrice(osbresult.getOverall_average());
+									log.debug("Osbuddy Price: {}", osbresult.getOverall_average());
+								},
+								(e) -> log.debug("Error getting price of item {}", finalItemId, e)
+						);
+
+				if(itemPrice > groundItem.getGePrice() ){
+					log.debug("Item Manager Price: {}", itemPrice);
+					groundItem.setGePrice(itemPrice);
+				}
+			});
 		}
 
 		return groundItem;

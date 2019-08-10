@@ -27,8 +27,14 @@ package net.runelite.client.plugins.itemprices;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.util.concurrent.ScheduledExecutorService;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import io.reactivex.schedulers.Schedulers;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.Constants;
 import net.runelite.api.InventoryID;
@@ -40,6 +46,7 @@ import net.runelite.api.MenuAction;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.widgets.WidgetID;
 import net.runelite.api.widgets.WidgetInfo;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -47,10 +54,24 @@ import net.runelite.client.ui.overlay.tooltip.Tooltip;
 import net.runelite.client.ui.overlay.tooltip.TooltipManager;
 import net.runelite.client.util.ColorUtil;
 import net.runelite.client.util.StackFormatter;
+import net.runelite.http.api.osbuddy.OSBGrandExchangeClient;
 
+@Slf4j
 @Singleton
 class ItemPricesOverlay extends Overlay
 {
+	@Getter
+	@Setter
+	int gePrice = 0;
+
+	@Inject
+	private ClientThread clientThread;
+
+	@Inject
+	private ScheduledExecutorService executorService;
+
+	private static final OSBGrandExchangeClient CLIENT = new OSBGrandExchangeClient();
+
 	private static final int INVENTORY_ITEM_WIDGETID = WidgetInfo.INVENTORY.getPackedId();
 	private static final int BANK_INVENTORY_ITEM_WIDGETID = WidgetInfo.BANK_INVENTORY_ITEMS_CONTAINER.getPackedId();
 	private static final int BANK_ITEM_WIDGETID = WidgetInfo.BANK_ITEM_CONTAINER.getPackedId();
@@ -206,7 +227,29 @@ class ItemPricesOverlay extends Overlay
 
 		if (plugin.isShowGEPrice())
 		{
-			gePrice = itemManager.getItemPrice(id);
+			int finalId = id;
+			executorService.submit(() ->
+			{
+				CLIENT.lookupItem(finalId)
+						.subscribeOn(Schedulers.io())
+						.observeOn(Schedulers.from(clientThread))
+						.subscribe(
+								(osbresult) ->
+								{
+									final int price = osbresult.getOverall_average();
+									setGePrice(price);
+									log.debug("Osbuddy Price: {}", price);
+								},
+								(e) -> log.debug("Error getting price of item {}", finalId, e)
+						);
+
+				log.debug("Item Manager Price: {}", itemManager.getItemPrice(finalId));
+				if(itemManager.getItemPrice(finalId) > getGePrice() )
+				{
+					setGePrice(itemManager.getItemPrice(finalId));
+				}
+
+			});
 		}
 		if (plugin.isShowHAValue())
 		{
