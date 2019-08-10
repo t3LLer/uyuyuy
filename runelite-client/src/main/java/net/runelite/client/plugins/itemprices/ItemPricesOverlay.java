@@ -65,9 +65,6 @@ class ItemPricesOverlay extends Overlay
 	int gePrice = 0;
 
 	@Inject
-	private ClientThread clientThread;
-
-	@Inject
 	private ScheduledExecutorService executorService;
 
 	private static final OSBGrandExchangeClient CLIENT = new OSBGrandExchangeClient();
@@ -220,7 +217,6 @@ class ItemPricesOverlay extends Overlay
 			return null;
 		}
 
-		int gePrice = 0;
 		int haPrice = 0;
 		int haProfit = 0;
 		final int itemHaPrice = Math.round(itemDef.getPrice() * Constants.HIGH_ALCHEMY_MULTIPLIER);
@@ -232,18 +228,17 @@ class ItemPricesOverlay extends Overlay
 			{
 				CLIENT.lookupItem(finalId)
 						.subscribeOn(Schedulers.io())
-						.observeOn(Schedulers.from(clientThread))
 						.subscribe(
 								(osbresult) ->
 								{
 									final int price = osbresult.getOverall_average();
 									setGePrice(price);
-									log.debug("Osbuddy Price: {}", price);
+									log.info("Osbuddy Price: {}", price);
 								},
 								(e) -> log.debug("Error getting price of item {}", finalId, e)
 						);
 
-				log.debug("Item Manager Price: {}", itemManager.getItemPrice(finalId));
+				log.info("Item Manager Price: {}", itemManager.getItemPrice(finalId));
 				if(itemManager.getItemPrice(finalId) > getGePrice() )
 				{
 					setGePrice(itemManager.getItemPrice(finalId));
