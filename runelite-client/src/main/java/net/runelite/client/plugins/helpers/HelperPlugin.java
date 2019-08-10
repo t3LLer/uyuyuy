@@ -53,7 +53,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static net.runelite.client.plugins.helpers.HelperWidget.WidgetCombatEnabled;
+import static net.runelite.client.plugins.helpers.HelperWidget.*;
 
 
 @Slf4j
@@ -219,6 +219,10 @@ public class HelperPlugin extends Plugin {
         baseReactVar = helperConfig.baseReactVar();
         updateMouseMotionFactory();
         WidgetCombatEnabled = helperConfig.widgetEnableComabat();
+        WidgetNPCPromptsEnabled = helperConfig.widgetNPCprompts();
+        WidgetRunecraftEnabled = helperConfig.widgetRunecrafting();
+        WidgetBankingEnabled = helperConfig.widgetBanking();
+        WidgetPlayerEnabled = helperConfig.playerWidgets();
     }
 
     public void onConfigChanged(ConfigChanged event) {

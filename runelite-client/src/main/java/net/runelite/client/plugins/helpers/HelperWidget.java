@@ -60,9 +60,10 @@ public class HelperWidget extends Overlay {
     public static LocalPoint opponentPoint = new LocalPoint(0, 0);
 
     static boolean WidgetCombatEnabled = true;
-    public static boolean WidgetBankingEnabled = true;
-    public static boolean WidgetNPCPromptsEnabled = true;
-    public static boolean WidgetRunecraftEnabled = true;
+    static boolean WidgetBankingEnabled = true;
+    static boolean WidgetNPCPromptsEnabled = true;
+    static boolean WidgetPlayerEnabled = true;
+    static boolean WidgetRunecraftEnabled = true;
 
     public static boolean bankIsOpen;
     public static boolean dialogOpen = false;
@@ -147,19 +148,19 @@ public class HelperWidget extends Overlay {
         HelperThread.getThreadStates();
 
         CombatEnabled = configManager.getConfiguration(CONFIG_GROUP, "widgetEnableCombat").equals("true");
-
-        inventory = client.getWidget(WidgetInfo.INVENTORY);
-        bank = client.getWidget(WidgetInfo.BANK_ITEM_CONTAINER);
-        furniture = client.getWidget(WidgetInfo.FURNITURE_MENU_OPTION_2);
-        chatboxCraftOptionOne = client.getWidget(WidgetInfo.CHATBOX_CRAFT_CRAFT_ONE);
-        chatCraftOptionOne = chatboxCraftOptionOne != null && !chatboxCraftOptionOne.isHidden();
-        runningToggle = client.getWidget(WidgetInfo.MINIMAP_TOGGLE_RUN_ORB);
-        runningEnabled = client.getVar(VarPlayer.RUNNING);
-        specialAttackToggle = client.getWidget(WidgetInfo.MINIMAP_TOGGLE_SPEC_ORB);
         superGlassMake = client.getWidget(WidgetInfo.SPELL_SUPERGLASS_MAKE);
+
+        if(WidgetPlayerEnabled) {
+            runningToggle = client.getWidget(WidgetInfo.MINIMAP_TOGGLE_RUN_ORB);
+            runningEnabled = client.getVar(VarPlayer.RUNNING);
+            specialAttackToggle = client.getWidget(WidgetInfo.MINIMAP_TOGGLE_SPEC_ORB);
+        }
 
         if (WidgetNPCPromptsEnabled) {
 
+            furniture = client.getWidget(WidgetInfo.FURNITURE_MENU_OPTION_2);
+            chatboxCraftOptionOne = client.getWidget(WidgetInfo.CHATBOX_CRAFT_CRAFT_ONE);
+            chatCraftOptionOne = chatboxCraftOptionOne != null && !chatboxCraftOptionOne.isHidden();
             Widget s = client.getWidget(WidgetInfo.SHOP_INVENTORY_ITEMS_CONTAINER);
             Widget c = client.getWidget(WidgetInfo.DIALOG_PLAYER);
             Widget n = client.getWidget(WidgetInfo.DIALOG_NPC);
@@ -179,7 +180,8 @@ public class HelperWidget extends Overlay {
         }
 
         if (WidgetBankingEnabled) {
-
+            inventory = client.getWidget(WidgetInfo.INVENTORY);
+            bank = client.getWidget(WidgetInfo.BANK_ITEM_CONTAINER);
             bankIsOpen = bank != null && !bank.isHidden();
             bankDepositInventory = client.getWidget(WidgetInfo.BANK_DEPOSIT_INVENTORY);
             withdrawOptionALL = client.getWidget(WidgetInfo.BANK_WITHDRAW_ALL);

@@ -26,12 +26,51 @@ package net.runelite.client.config;
 
 @ConfigGroup("helpers")
 public interface HelperConfig extends Config {
+
+    // If you manually change these settings you might break an active plugin.
+
     @ConfigItem(
             keyName = "widgetEnableCombat",
-            name = "Enable Combat Overlay",
-            description = "Enables or Disables the Combat Overlay"
+            name = "NPC Combat Overlay",
+            description = "Enables or Disables the NPC Combat Overlay"
     )
     default boolean widgetEnableComabat() {
+        return true;
+    }
+
+    @ConfigItem(
+            keyName = "playerWidgets",
+            name = "Player Widgets",
+            description = "Enables or Disables Player related Widgets"
+    )
+    default boolean playerWidgets() {
+        return true;
+    }
+
+    @ConfigItem(
+            keyName = "widgetNPCprompts",
+            name = "NPC Widgets",
+            description = "Enables or Disables NPC related Widgets"
+    )
+    default boolean widgetNPCprompts() {
+        return true;
+    }
+
+    @ConfigItem(
+            keyName = "widgetRunecrafting",
+            name = "Runcrafting Widgets",
+            description = "Enables or Disables Runecrafting related widgets"
+    )
+    default boolean widgetRunecrafting() {
+        return true;
+    }
+
+    @ConfigItem(
+            keyName = "widgetBanking",
+            name = "Banking Widgets",
+            description = "Enables or Disables Banking/Inventory related widgets"
+    )
+    default boolean widgetBanking() {
         return true;
     }
 
