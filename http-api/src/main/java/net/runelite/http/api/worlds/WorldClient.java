@@ -40,13 +40,15 @@ import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static net.runelite.http.api.RuneLiteAPI.RUNELITE_WORLDS;
+
 public class WorldClient
 {
 	private static final Logger logger = LoggerFactory.getLogger(WorldClient.class);
 
 	public Observable<WorldResult> lookupWorlds()
 	{
-		HttpUrl url = RuneLiteAPI.getApiBase().newBuilder()
+		HttpUrl url = RuneLiteAPI.getLocalApiBase().newBuilder()
 			.addPathSegment("worlds.js")
 			.build();
 
@@ -78,16 +80,10 @@ public class WorldClient
 
 	public Observable<WorldResult> lookupWorldsRunelite()
 	{
-		HttpUrl url = RuneLiteAPI.getRuneLiteWorldBase().newBuilder()
-				.addPathSegment("worlds.js")
-				.build();
-
-		logger.debug("Built URI: {}", url);
-
 		return Observable.defer(() ->
 		{
 			Request request = new Request.Builder()
-					.url(url)
+					.url(RUNELITE_WORLDS)
 					.build();
 
 			try (Response response = RuneLiteAPI.CLIENT.newCall(request).execute())

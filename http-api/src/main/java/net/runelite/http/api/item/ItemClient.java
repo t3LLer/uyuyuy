@@ -49,7 +49,7 @@ public class ItemClient
 
 	public Observable<Map<Integer, ItemStats>> getStats()
 	{
-		HttpUrl.Builder urlBuilder = RuneLiteAPI.getStaticBase().newBuilder()
+		HttpUrl.Builder urlBuilder = RuneLiteAPI.getStaticBaseGithub().newBuilder()
 			.addPathSegment("item")
 			.addPathSegment("stats.ids.min.json");
 

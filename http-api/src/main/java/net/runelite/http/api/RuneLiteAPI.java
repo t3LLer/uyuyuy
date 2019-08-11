@@ -29,55 +29,57 @@ import com.google.gson.GsonBuilder;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+
 import java.util.concurrent.TimeUnit;
 
 public class RuneLiteAPI {
 
-	private static final String serviceVersion = "1.5.31-SNAPSHOT";
-	private static final int rsVersion = 181;
+    // Local First with Github for Static or Fallback to RuneLite
 
-	public static final OkHttpClient CLIENT;
-	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final String serviceVersion = "1.5.31-SNAPSHOT";
+    private static final int rsVersion = 181;
 
-	private static final String BASE = "http://localhost:8080/";
-	private static final String STATICBASE = "https://raw.githubusercontent.com/runelite/static.runelite.net/gh-pages/";
+    public static final OkHttpClient CLIENT;
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-	private static final String RUNELITE_VERSION = "1.5.30.1";
-	private static final String RUNELITE_BASE = "https://api.runelite.net/runelite-";
-	public static final String RUNELITE_PRICES = RUNELITE_BASE + getVersion() + "/item/prices.js";
+    private static final String BASE = "http://localhost:8080/";
+    private static final String STATICBASE = "https://raw.githubusercontent.com/runelite/static.runelite.net/gh-pages/";
 
-	static {
+    private static final String RUNELITE_VERSION = "1.5.30.1";
+    private static final String RUNELITE_BASE = "https://api.runelite.net/runelite-" + getRuneLiteApiVersion();
+    public static final String RUNELITE_PRICES = getRuneLiteApiBase() + "/item/prices.js";
+    public static final String RUNELITE_WORLDS = getRuneLiteApiBase() + "/worlds.js";
 
-		CLIENT = new OkHttpClient.Builder()
-				.connectTimeout(8655, TimeUnit.MILLISECONDS)
-				.writeTimeout(8655, TimeUnit.MILLISECONDS)
-				.addNetworkInterceptor(chain -> {
-					Request userAgentRequest = chain.request()
-							.newBuilder()
-							.header("User-Agent", "RuneLite/" + RUNELITE_VERSION + "-" + "169eb5751dc8d98c602f4cf03a26d6ac4d8995db")
-							.build();
-					return chain.proceed(userAgentRequest);
-				})
-				.build();
-	}
+    static {
 
-	public static HttpUrl getApiBase() {
-		return HttpUrl.parse(BASE + "http-service-"+ serviceVersion);
-	}
+        CLIENT = new OkHttpClient.Builder()
+                .connectTimeout(8655, TimeUnit.MILLISECONDS)
+                .writeTimeout(8655, TimeUnit.MILLISECONDS)
+                .addNetworkInterceptor(chain -> {
+                    Request userAgentRequest = chain.request()
+                            .newBuilder()
+                            .header("User-Agent", "RuneLite/" + RUNELITE_VERSION + "-" + "169eb5751dc8d98c602f4cf03a26d6ac4d8995db")
+                            .build();
+                    return chain.proceed(userAgentRequest);
+                })
+                .build();
+    }
 
-	public static HttpUrl getRuneLiteWorldBase() {
-		return HttpUrl.parse(RUNELITE_BASE + RUNELITE_VERSION);
-	}
+    public static HttpUrl getLocalApiBase() {
+        return HttpUrl.parse(BASE + "http-service-" + serviceVersion);
+    }
 
-	public static HttpUrl getStaticBase() {
-		return HttpUrl.parse(STATICBASE);
-	}
+    public static HttpUrl getStaticBaseGithub() {
+        return HttpUrl.parse(STATICBASE);
+    }
 
-	public static String getVersion() {
-		return RUNELITE_VERSION;
-	}
+    public static HttpUrl getRuneLiteApiBase() { return HttpUrl.parse(RUNELITE_BASE); }
 
-	public static int getRsVersion() {
-		return rsVersion;
-	}
+    public static String getRuneLiteApiVersion() {
+        return RUNELITE_VERSION;
+    }
+
+    public static int getRsVersion() {
+        return rsVersion;
+    }
 }
