@@ -3,7 +3,7 @@
 
 - Pretty much every plugin has had the API removed.
 - Chat Commands has had some commands removed (No API).
-
+- WorldHopper/DefaultWorld plugin try to use the local service or fallback to [RuneLite](https://runelite.net/).
 - [Grand Exchange Shows osBuddy average](https://i.imgur.com/6Oohf32.png) on search.
 - Item Price plugin shows osBuddy price in bank if its higher.
 - GroundItems plugin shows osBuddy price on the ground if its higher.
