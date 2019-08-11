@@ -43,7 +43,6 @@ import net.runelite.client.input.KeyListener;
 import net.runelite.client.input.KeyManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.ui.ClientUI;
 
 @PluginDescriptor(
 	loadWhenOutdated = true, // prevent users from disabling
@@ -101,7 +100,7 @@ public class RuneLitePlusPlugin extends Plugin
 			return;
 		}
 
-		else if (!config.keyboardPin())
+		if (!config.keyboardPin())
 		{
 			entered = 0;
 			enterIdx = 0;
