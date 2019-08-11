@@ -39,7 +39,7 @@ public class RuneLiteProperties
 	private static final String RUNELITE_TITLE = "runelite.plus.title";
 	private static final String RUNELITE_VERSION = "runelite.version";
 
-	private final Properties properties = new Properties();
+	private static final Properties properties = new Properties();
 
 	private final RuneLightConfig runeLightConfig;
 
@@ -63,7 +63,7 @@ public class RuneLiteProperties
 		runeLightConfig = null;
 	}
 
-	public String getTitle()
+	public static String getTitle()
 	{
 		final StringBuilder sb = new StringBuilder(properties.getProperty(RUNELITE_TITLE));
 		String proxy;

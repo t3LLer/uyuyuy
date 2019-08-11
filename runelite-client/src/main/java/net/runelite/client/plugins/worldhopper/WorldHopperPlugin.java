@@ -550,14 +550,14 @@ public class WorldHopperPlugin extends Plugin
 						updateList();
 					}
 				},
-				(ex) -> {log.warn("Error looking up worlds", ex);
+				(ex) -> {log.warn("Error looking up worlds");
 				setSuccess(false);
 				}
 			);
 
 		if(!success && config.fallBackRuneLite()){
 
-			log.debug("Fetching worlds from RuneLite");
+			log.warn("Fetching worlds from RuneLite");
 			new WorldClient().lookupWorldsRunelite()
 					.subscribeOn(Schedulers.io())
 					.take(1)

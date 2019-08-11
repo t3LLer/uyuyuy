@@ -28,6 +28,9 @@ import com.google.inject.Provides;
 import io.reactivex.schedulers.Schedulers;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
@@ -108,6 +111,11 @@ public class DefaultWorldPlugin extends Plugin
 		applyWorld();
 	}
 
+
+	@Getter
+	@Setter
+	private boolean success = false;
+
 	private void changeWorld(int newWorld)
 	{
 		if (!worldChangeRequired || client.getGameState() != GameState.LOGIN_SCREEN)
@@ -125,6 +133,7 @@ public class DefaultWorldPlugin extends Plugin
 			return;
 		}
 
+		setSuccess(false);
 		worldClient.lookupWorlds()
 			.subscribeOn(Schedulers.io())
 			.observeOn(Schedulers.from(clientThread))
@@ -148,16 +157,60 @@ public class DefaultWorldPlugin extends Plugin
 						rsWorld.setLocation(world.getLocation());
 						rsWorld.setTypes(WorldUtil.toWorldTypes(world.getTypes()));
 
+						setSuccess(true);
 						client.changeWorld(rsWorld);
 						log.debug("Applied new world {}", correctedWorld);
 					}
 					else
 					{
-						log.warn("World {} not found.", correctedWorld);
+						setSuccess(false);
+						log.warn("World {} not found on Local world.js.", correctedWorld);
 					}
 				},
-				(e) -> log.warn("Error looking up world {}. Error: {}", correctedWorld, e)
+				(e) -> {log.warn("Error looking up world Locally {}. ", correctedWorld); setSuccess(false);}
 			);
+
+		if(!success){
+
+			log.warn("Looking up world {} on RuneLites world.js", correctedWorld);
+			worldClient.lookupWorldsRunelite()
+					.subscribeOn(Schedulers.io())
+					.observeOn(Schedulers.from(clientThread))
+					.subscribe(
+							(worldResult) ->
+							{
+								if (worldResult == null)
+								{
+									return;
+								}
+
+								final World world = worldResult.findWorld(correctedWorld);
+
+								if (world != null)
+								{
+									final net.runelite.api.World rsWorld = client.createWorld();
+									rsWorld.setActivity(world.getActivity());
+									rsWorld.setAddress(world.getAddress());
+									rsWorld.setId(world.getId());
+									rsWorld.setPlayerCount(world.getPlayers());
+									rsWorld.setLocation(world.getLocation());
+									rsWorld.setTypes(WorldUtil.toWorldTypes(world.getTypes()));
+
+									setSuccess(true);
+									client.changeWorld(rsWorld);
+									log.debug("Applied new world {}", correctedWorld);
+								}
+								else
+								{
+									setSuccess(false);
+									log.warn("World {} not found on RuneLites world.js.", correctedWorld);
+								}
+							},
+							(e) -> {log.warn("Error looking up world from RuneLite {}. Error: {}", correctedWorld, e); setSuccess(false);}
+					);
+
+
+		}
 	}
 
 	private void applyWorld()
