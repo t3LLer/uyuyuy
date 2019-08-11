@@ -135,4 +135,15 @@ public interface WorldHopperConfig extends Config
 	{
 		return false;
 	}
+
+	@ConfigItem(
+			keyName = "fallBacktoRuneLite",
+			name = "RuneLite Fallback",
+			description = "Attempt to use RuneLite to fetch worlds if local worlds isn't found",
+			group = "RuneLite"
+	)
+	default boolean fallBackRuneLite()
+	{
+		return true;
+	}
 }

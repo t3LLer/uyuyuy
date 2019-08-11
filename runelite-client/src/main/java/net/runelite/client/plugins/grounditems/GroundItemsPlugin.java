@@ -116,9 +116,6 @@ import net.runelite.http.api.osbuddy.OSBGrandExchangeClient;
 public class GroundItemsPlugin extends Plugin
 {
 	@Inject
-	private ClientThread clientThread;
-
-	@Inject
 	private ScheduledExecutorService executorService;
 
 	private static final OSBGrandExchangeClient CLIENT = new OSBGrandExchangeClient();
@@ -649,7 +646,6 @@ public class GroundItemsPlugin extends Plugin
 			{
 				CLIENT.lookupItem(finalItemId)
 						.subscribeOn(Schedulers.io())
-						.observeOn(Schedulers.from(clientThread))
 						.subscribe(
 								(osbresult) -> {
 									groundItem.setGePrice(osbresult.getOverall_average());

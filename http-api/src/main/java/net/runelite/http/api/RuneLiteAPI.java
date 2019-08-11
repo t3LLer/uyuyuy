@@ -32,7 +32,7 @@ import okhttp3.Request;
 import java.util.concurrent.TimeUnit;
 
 public class RuneLiteAPI {
-	private static final String version = "1.5.30.1";
+
 	private static final String serviceVersion = "1.5.31-SNAPSHOT";
 	private static final int rsVersion = 181;
 
@@ -41,7 +41,10 @@ public class RuneLiteAPI {
 
 	private static final String BASE = "http://localhost:8080/";
 	private static final String STATICBASE = "https://raw.githubusercontent.com/runelite/static.runelite.net/gh-pages/";
-	public static final String RUNELITE_PRICES = "https://api.runelite.net/runelite-" + getVersion() + "/item/prices.js";
+
+	private static final String RUNELITE_VERSION = "1.5.30.1";
+	private static final String RUNELITE_BASE = "https://api.runelite.net/runelite-";
+	public static final String RUNELITE_PRICES = RUNELITE_BASE + getVersion() + "/item/prices.js";
 
 	static {
 
@@ -51,7 +54,7 @@ public class RuneLiteAPI {
 				.addNetworkInterceptor(chain -> {
 					Request userAgentRequest = chain.request()
 							.newBuilder()
-							.header("User-Agent", "RuneLite/" + version + "-" + "169eb5751dc8d98c602f4cf03a26d6ac4d8995db")
+							.header("User-Agent", "RuneLite/" + RUNELITE_VERSION + "-" + "169eb5751dc8d98c602f4cf03a26d6ac4d8995db")
 							.build();
 					return chain.proceed(userAgentRequest);
 				})
@@ -62,12 +65,16 @@ public class RuneLiteAPI {
 		return HttpUrl.parse(BASE + "http-service-"+ serviceVersion);
 	}
 
+	public static HttpUrl getRuneLiteWorldBase() {
+		return HttpUrl.parse(RUNELITE_BASE + RUNELITE_VERSION);
+	}
+
 	public static HttpUrl getStaticBase() {
 		return HttpUrl.parse(STATICBASE);
 	}
 
 	public static String getVersion() {
-		return version;
+		return RUNELITE_VERSION;
 	}
 
 	public static int getRsVersion() {

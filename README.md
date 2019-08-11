@@ -1,21 +1,15 @@
-# Rune Light - The safer client.
+# Rune Light - The Safer Client.
 
-Its RuneLitePlus but it only runs Local-Injected without a Launcher.
 
-- Loot Tracker works without API.
-- XP Tracker works without API.
-- Slayer plugin works better without API.
+- Pretty much every plugin has had the API removed.
 - Chat Commands has had some commands removed (No API).
-- Raids Plugin works without the Party aspect.
-- Grand Exchange Shows osBuddy average on search.
-- Item Price plugin shows osBuddy price if higher.
-- GroundItems plugin shows osBuddy price if higher.
 
-[You have to use your own local HTTP-Service to use some features](https://github.com/Hermetism/runelight/wiki/SETUP-YOUR-OWN-HTTP-SERVICE)
+- [Grand Exchange Shows osBuddy average](https://i.imgur.com/6Oohf32.png) on search.
+- Item Price plugin shows osBuddy price in bank if its higher.
+- GroundItems plugin shows osBuddy price on the ground if its higher.
 
-You can use it without if you don't mind missing out on:
-- WorldHopper (in-game still works obviously)
-- Osbuddy Prices
+[osBuddy prices only work with your own HTTP-Service](https://github.com/Hermetism/runelight/wiki/SETUP-YOUR-OWN-HTTP-SERVICE)
+
 
 ## Project Layout
 - [cache](cache/src/main/java/net/runelite/cache) - Libraries used for reading/writing cache files, as well as the data in it

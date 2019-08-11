@@ -49,6 +49,7 @@ import javax.inject.Singleton;
 import javax.swing.SwingUtilities;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.ChatPlayer;
@@ -526,10 +527,14 @@ public class WorldHopperPlugin extends Plugin
 		fetchWorlds();
 	}
 
+	@Getter
+	@Setter
+	boolean success = false;
+
 	private void fetchWorlds()
 	{
-		log.debug("Fetching worlds");
-
+		log.debug("Fetching worlds Locally");
+		setSuccess(false);
 		new WorldClient().lookupWorlds()
 			.subscribeOn(Schedulers.io())
 			.take(1)
@@ -538,14 +543,43 @@ public class WorldHopperPlugin extends Plugin
 				{
 					if (worldResult != null)
 					{
+						setSuccess(true);
 						worldResult.getWorlds().sort(Comparator.comparingInt(World::getId));
 						this.worldResult = worldResult;
 						this.lastFetch = Instant.now();
 						updateList();
 					}
 				},
-				(ex) -> log.warn("Error looking up worlds", ex)
+				(ex) -> {log.warn("Error looking up worlds", ex);
+				setSuccess(false);
+				}
 			);
+
+		if(!success && config.fallBackRuneLite()){
+
+			log.debug("Fetching worlds from RuneLite");
+			new WorldClient().lookupWorldsRunelite()
+					.subscribeOn(Schedulers.io())
+					.take(1)
+					.subscribe(
+							(worldResult) ->
+							{
+								if (worldResult != null)
+								{
+									setSuccess(true);
+									worldResult.getWorlds().sort(Comparator.comparingInt(World::getId));
+									this.worldResult = worldResult;
+									this.lastFetch = Instant.now();
+									updateList();
+								}
+							},
+							(ex) -> {log.warn("Error looking up worlds from RuneLite", ex);
+								setSuccess(false);
+							}
+					);
+
+		}
+
 	}
 
 	/**
